@@ -28,17 +28,17 @@
         <div id="result"></div>
         <script>
             read_all_videos.onclick = () => {
-                fetch("http://localhost:5000/videos")
+                fetch("http://l1-nodejs-videos-api.herokuapp.com/videos")
                     .then((res) => res.json())
                     .then((data) => (result.innerHTML = JSON.stringify(data)));
             };
             read_single_video.onclick = () => {
-                fetch("http://localhost:5000/videos/" + read_id.value)
+                fetch("http://l1-nodejs-videos-api.herokuapp.com/videos/" + read_id.value)
                     .then((res) => res.json())
                     .then((data) => (result.innerHTML = JSON.stringify(data)));
             };
             create_video.onclick = () => {
-                fetch("http://localhost:5000/videos", {
+                fetch("http://l1-nodejs-videos-api.herokuapp.com/videos", {
                     method: "POST",
                     body: JSON.stringify({ title: create_title.value }),
                     headers: {
@@ -49,14 +49,14 @@
                     .then((data) => (result.innerHTML = JSON.stringify(data)));
             };
             delete_video.onclick = () => {
-                fetch(`http://localhost:5000/videos/${delete_id.value}`, {
+                fetch(`http://l1-nodejs-videos-api.herokuapp.com/videos/${delete_id.value}`, {
                     method: "DELETE",
                 })
                     .then((res) => res.json())
                     .then((data) => (result.innerHTML = JSON.stringify(data)));
             };
             update_video.onclick = () => {
-                fetch(`http://localhost:5000/videos/${update_id.value}`, {
+                fetch(`http://l1-nodejs-videos-api.herokuapp.com/videos/${update_id.value}`, {
                     method: "PUT",
                     body: JSON.stringify({ title: update_title.value }),
                     headers: {
