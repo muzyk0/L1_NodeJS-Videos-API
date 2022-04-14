@@ -12,8 +12,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(authMiddleware);
-
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello: World!");
 });
