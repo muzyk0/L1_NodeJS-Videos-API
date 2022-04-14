@@ -22,10 +22,15 @@ export const videosRepository = {
 
         return true;
     },
-    updateVideoById(id: number, title: string): Video[] {
-        return videos.map((video) =>
-            video.id === id ? { ...video, title } : video
-        );
+    updateVideoById(id: number, title: string): Video | null {
+        const video = videos.find((video) => video.id === id);
+
+        if (video) {
+            video.title = title;
+
+            return video;
+        }
+        return null;
     },
     createVideo(title: string): Video {
         const newVideo = {

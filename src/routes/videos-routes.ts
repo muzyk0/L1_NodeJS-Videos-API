@@ -14,10 +14,11 @@ videosRouter
         res.send(videos);
     })
     .get("/:id", (req: Request, res: Response) => {
-        const video = videosRepository.getVideoById(req.body.id);
+        const id = parseInt(req.params.id);
+        const video = videosRepository.getVideoById(id);
 
         if (video) {
-            res.send(video);
+            res.status(200).send(video);
         } else {
             res.sendStatus(404);
         }
@@ -25,7 +26,7 @@ videosRouter
     .post(
         "/",
         body("title")
-            .isLength({ max: 15, min: 5 })
+            .isLength({ max: 40, min: 4 })
             .withMessage("Max 5-15 symbols")
             .matches(/^[\w ]*$/),
         inputValidatorMiddleware,
@@ -35,26 +36,50 @@ videosRouter
             res.status(201).send(newVideo);
         }
     )
-    .put("/:id", (req: Request<{ id: string }>, res: Response) => {
-        const id = parseInt(req.params.id);
+    .put(
+        "/:id",
+        body("title")
+            .isLength({ max: 40, min: 4 })
+            .withMessage("Max 5-15 symbols")
+            .matches(/^[\w ]*$/),
+        inputValidatorMiddleware,
+        (req: Request<{ id: string }>, res: Response) => {
+            const id = parseInt(req.params.id);
 
-        if (req.body.title.length === 0) {
-            res.sendStatus(400);
-            return;
+            if (!req.body.title?.length) {
+                const error = {
+                    errorsMessages: [
+                        {
+                            message: "If the inputModel has incorrect values",
+                            field: "title",
+                        },
+                    ],
+                    resultCode: 0,
+                };
+                res.status(400).send(error);
+                return;
+            }
+
+            const video = videosRepository.updateVideoById(id, req.body.title);
+
+            if (!video) {
+                res.sendStatus(404);
+                return;
+            }
+
+            console.log("video ", video);
+
+            res.sendStatus(204);
         }
+    )
+    .delete("/:id", (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+        const videos = videosRepository.deleteVideoById(id);
 
-        const video = videosRepository.updateVideoById(id, req.body.title);
-
-        if (!video) {
+        if (!videos) {
             res.sendStatus(404);
             return;
         }
-
-        res.status(200);
-        res.send(video);
-    })
-    .delete("/:id", (req: Request, res: Response) => {
-        const videos = videosRepository.deleteVideoById(req.body.id);
 
         res.status(204);
         res.send(videos);
